@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<title>Cross-Browser QRCode generator for Javascript</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="qrcode.js"></script>
+<script src="reqrcode.js"></script>
+</head>
+<body>
+    输入要生成二维码的内容
+    <input type="input" value="hello" id="qrText"/>
+    <p>Render in table</p>
+    <div id="qrcodeTable"></div>
+    <p>Render in canvas</p>
+    <div id="qrcodeCanvas"></div>
+    <script>
+        //jQuery('#qrcode').qrcode("this plugin is great");
+        var qrTextInput = document.getElementById('qrText');
+        qrTextInput.onchange = function () {
+          var qrText = document.getElementById('qrText').value;
+          $('#qrcodeTable').qrcode({
+              render  : "table",
+              text    : qrText
+          });
+          $('#qrcodeCanvas').qrcode({
+              render : "canvas",
+              height: 300,
+              width: 300,
+              text    : qrText,
+              src: "http://0d077ef9e74d8.cdn.sohucs.com/pPSHyhj_jpg"
+          });
+        }
+        qrTextInput.onchange();
+    </script>
+
+
+    选择需要解析的图片：<input type="file" id="newfile">
+    <input type="inpput" id="imgUrl">
+    <button id="parseUrlImg">解析Img Qrcode</button>
+    <script>
+        var newfile = document.getElementById('newfile');
+        var getObjectURL = function (file) {
+            var url = null;
+            if (window.createObjectURL != undefined) { // basic
+              url = window.createObjectURL(file);
+            } else if (window.URL != undefined) { // mozilla(firefox)
+            url = window.URL.createObjectURL(file);
+            } else if (window.webkitURL != undefined) { // webkit or chrome
+              url = window.webkitURL.createObjectURL(file);
+            }
+            return url;
+        }
+
+
+        newfile.onchange = function () {
+            //   console.log(newfile[0]);
+            console.log(getObjectURL(this.files[0]));// newfile[0]是通过input file上传的二维码图片文件
+            qrcode.decode(getObjectURL(this.files[0]));
+            qrcode.callback = function (imgMsg) {
+                alert("二维码解析：" + imgMsg)
+            }
+        }
+        /*
+        var btn1 = document.getElementById('parseUrlImg');
+        btn1.onclick = function parseUrlImg(){
+        	var input1 = document.getElementById('imgUrl');
+        	var url = input1.value;
+        	qrcode.decode(url);
+            qrcode.callback = function (imgMsg) {
+                alert("二维码解析：" + imgMsg)
+            }
+        }
+        */
+    </script>
+</body>
